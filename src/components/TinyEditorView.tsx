@@ -1,24 +1,27 @@
 import React, { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import { RawEditorOptions } from "tinymce";
 
 type TinyEditorViewProps = {
   copy: string;
-};
-export default function TinyEditorView({ copy }: TinyEditorViewProps) {
+} & RawEditorOptions;
+
+export default function TinyEditorView({ copy, ...rawEditorOptions }: TinyEditorViewProps) {
   const editorRef = useRef(null);
   const log = () => {
     if (editorRef.current) {
       console.log(editorRef.current.getContent());
     }
   };
+  console.log({key: import.meta.env.VITE_TINY_MCE_API_KEY})
   return (
-    <>
       <Editor
-        apiKey={import.meta.env.TINY_MCE_API_KEY}
+        apiKey={import.meta.env.VITE_TINY_MCE_API_KEY}
         onInit={(evt, editor) => (editorRef.current = editor)}
-        initialValue="<p>This is the initial content of the editor.</p>"
+        initialValue={copy}
         init={{
           height: 500,
+          width: 500,
           menubar: false,
           plugins: [
             "advlist",
@@ -45,10 +48,9 @@ export default function TinyEditorView({ copy }: TinyEditorViewProps) {
             "bold italic forecolor | alignleft aligncenter " +
             "alignright alignjustify | bullist numlist outdent indent | " +
             "removeformat | help",
-          content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+          content_style: "body { font-family:Courier New,monospace,sans-serif; font-size:14px }",
+          ...rawEditorOptions,
         }}
       />
-      <button onClick={log}>Log editor content</button>
-    </>
   );
 }

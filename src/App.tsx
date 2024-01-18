@@ -1,17 +1,23 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useRef } from "react";
 import "./App.css";
-import testImage from "./assets/test_image_half_mb copy.jpeg";
+import testImage from "./assets/egg.jpg";
 import TinyEditorView from "./components/TinyEditorView";
-import { imageToAscii } from "./lib/imageToAscii";
+import { useAsciiImage } from "./hooks/useAsciiImage";
 
 function App() {
   const frame = testImage;
-  const copy = imageToAscii(frame);
+  const canvasRef = useRef(null);
+  const { ascii, height, width } = useAsciiImage(frame, canvasRef);
+
+  console.log({ ascii });
   return (
     <div>
-      <TinyEditorView copy={copy} />
+      {/* <canvas ref={canvasRef} style={{ display: "none" }} /> */}
+      {/* {ascii ? <TinyEditorView copy={ascii} height={height} width={width} /> : "Loading..."} */}
+
+      {ascii ? <TinyEditorView copy={ascii}  /> : "Loading..."}
+
+      <canvas ref={canvasRef}  />
     </div>
   );
 }
