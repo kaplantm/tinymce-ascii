@@ -49,7 +49,7 @@ export default function TinyEditorView({ copy, ...rawEditorOptions }: TinyEditor
             "alignright alignjustify | bullist numlist outdent indent | " +
             "removeformat | help",
           content_style:
-            "body { font-family:Courier New,monospace,sans-serif; font-size:8px; line-height: 1.2; text-align:center; font-weight:800; white-space:nowrap }",
+            "body { font-family:Courier New,monospace,sans-serif; font-size:8px; line-height: 4px; letter-spacing:-1px; text-align:center; font-weight:800; white-space:nowrap }",
           ...rawEditorOptions,
         }}
       />

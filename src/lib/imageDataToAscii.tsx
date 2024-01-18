@@ -1,19 +1,24 @@
 // Code reference: https://github.com/S4NCHOPANZ4/ASCII-converter/blob/main/src/components/ImageToAcsii.jsx
 
 const getAsciiCharacter = (brightness: number) => {
-  const asciiChars = "@ $#wa*i=;,.    ";
+  // const asciiChars = "■◉␥★☃◊";
+  // const asciiChars = ".,:!*#$@";
+
+
+  // const asciiChars = "◉★◊◊";
+  // const asciiChars = "𓆉";
   // .,:!*#$@
   // Scale the brightness to the range of asciiChars array indexes
-  const scaledBrightness = Math.floor((brightness / 255) * (asciiChars.length - 1));
+  // const scaledBrightness = Math.floor((brightness / 255) * (asciiChars.length - 1));
 
   // Get the corresponding ASCII character
-  const asciiChar = asciiChars.charAt(scaledBrightness);
+  // const asciiChar = asciiChars.charAt(scaledBrightness);
 
-  return asciiChar === " " ? '&nbsp;' : asciiChar;
+  return "■";
 };
 
 const createRowsStr = (arr: string[][], spacing: number) => {
-  const rowsWithSpacing = arr.map((row) => row.join(" ".repeat(spacing)));
+  const rowsWithSpacing = arr.map((row) => row.join("".repeat(spacing)));
   const asciiArt = rowsWithSpacing.join("<br/>");
   return asciiArt;
 };
