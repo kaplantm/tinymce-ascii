@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { imageDataToAscii } from "../lib/imageDataToAscii";
 
-const scaleImage = (image: HTMLImageElement, maxDimension = 500) => {
-  const actualMax = (Math.max(Math.min(window.innerHeight-100, window.innerWidth-100), maxDimension))/5;
-
-  const scale = actualMax / Math.max(image.width, image.height);
+const scaleImage = (image: HTMLImageElement, maxDimension = 100) => {
+  const scale = maxDimension / Math.max(image.width, image.height);
+  console.log({scale, height: image.height * scale, width: image.width * scale, imageH: image.height, imageW: image.width })
   return { height: image.height * scale, width: image.width * scale };
 };
 

@@ -9,12 +9,12 @@ const getAsciiCharacter = (brightness: number) => {
   // Get the corresponding ASCII character
   const asciiChar = asciiChars.charAt(scaledBrightness);
 
-  return asciiChar;
+  return asciiChar === " " ? '&nbsp;' : asciiChar;
 };
 
 const createRowsStr = (arr: string[][], spacing: number) => {
   const rowsWithSpacing = arr.map((row) => row.join(" ".repeat(spacing)));
-  const asciiArt = rowsWithSpacing.join("\n");
+  const asciiArt = rowsWithSpacing.join("<br/>");
   return asciiArt;
 };
 
@@ -42,13 +42,13 @@ export const imageDataToAscii = (imageData: ImageData | null): string => {
     const blue = data[i + 2];
 
     // Calculate the average brightness
-    const brightness = (red + green + blue) / 3;
+    const brightness = (red + green + blue) / 4; // dividing by 4 here sinces theres a lot of extra whitespace in ascii
 
     // Convert the average brightness to an ASCII character
     const asciiChar = getAsciiCharacter(brightness);
 
     // Store the ASCII character in the array
-    asciiArray.push(asciiChar);
+    asciiArray.push(`<span style="color: rgb(${red}, ${green}, ${blue});">${asciiChar}</span>`);
   }
   return createRows(asciiArray, imageData.width);
 };
