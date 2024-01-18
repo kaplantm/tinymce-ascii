@@ -13,44 +13,45 @@ export default function TinyEditorView({ copy, ...rawEditorOptions }: TinyEditor
       console.log(editorRef.current.getContent());
     }
   };
-  console.log({key: import.meta.env.VITE_TINY_MCE_API_KEY})
+  console.log({ key: import.meta.env.VITE_TINY_MCE_API_KEY });
   return (
-      <Editor
-        apiKey={import.meta.env.VITE_TINY_MCE_API_KEY}
-        onInit={(evt, editor) => (editorRef.current = editor)}
-        initialValue={copy}
-        init={{
-          height: 500,
-          width: 500,
-          menubar: false,
-          plugins: [
-            "advlist",
-            "autolink",
-            "lists",
-            "link",
-            "image",
-            "charmap",
-            "preview",
-            "anchor",
-            "searchreplace",
-            "visualblocks",
-            "code",
-            "fullscreen",
-            "insertdatetime",
-            "media",
-            "table",
-            "code",
-            "help",
-            "wordcount",
-          ],
-          toolbar:
-            "undo redo | blocks | " +
-            "bold italic forecolor | alignleft aligncenter " +
-            "alignright alignjustify | bullist numlist outdent indent | " +
-            "removeformat | help",
-          content_style: "body { font-family:Courier New,monospace,sans-serif; font-size:14px }",
-          ...rawEditorOptions,
-        }}
-      />
+    <Editor
+      apiKey={import.meta.env.VITE_TINY_MCE_API_KEY}
+      onInit={(evt, editor) => (editorRef.current = editor)}
+      initialValue={copy}
+      init={{
+        height: window.innerHeight * 0.8,
+        width: window.innerWidth * 0.8,
+        menubar: false,
+        plugins: [
+          "advlist",
+          "autolink",
+          "lists",
+          "link",
+          "image",
+          "charmap",
+          "preview",
+          "anchor",
+          "searchreplace",
+          "visualblocks",
+          "code",
+          "fullscreen",
+          "insertdatetime",
+          "media",
+          "table",
+          "code",
+          "help",
+          "wordcount",
+        ],
+        toolbar:
+          "undo redo | blocks | " +
+          "bold italic forecolor | alignleft aligncenter " +
+          "alignright alignjustify | bullist numlist outdent indent | " +
+          "removeformat | help",
+        content_style:
+          "body { font-family:Courier New,monospace,sans-serif; font-size:2px; line-height: 1.2; text-align:center; }",
+        ...rawEditorOptions,
+      }}
+    />
   );
 }

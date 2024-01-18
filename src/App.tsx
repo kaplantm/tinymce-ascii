@@ -7,17 +7,17 @@ import { useAsciiImage } from "./hooks/useAsciiImage";
 function App() {
   const frame = testImage;
   const canvasRef = useRef(null);
-  const { ascii, height, width } = useAsciiImage(frame, canvasRef);
-
+  const { ascii, height = 300, width = 300 } = useAsciiImage(frame, canvasRef);
+  // const ascii = `<pre>foo \n food?</pre>`;
   console.log({ ascii });
   return (
     <div>
-      {/* <canvas ref={canvasRef} style={{ display: "none" }} /> */}
-      {/* {ascii ? <TinyEditorView copy={ascii} height={height} width={width} /> : "Loading..."} */}
+      <canvas ref={canvasRef} style={{ display: "none" }} />
+      {/* {ascii ? <TinyEditorView copy={`<pre>${ascii}</pre>`} height={height * 2} width={width * 2} /> : "Loading..."} */}
 
-      {ascii ? <TinyEditorView copy={ascii}  /> : "Loading..."}
+      {ascii ? <TinyEditorView copy={`<pre>${ascii}</pre>`} /> : "Loading..."}
 
-      <canvas ref={canvasRef}  />
+      {/* <canvas ref={canvasRef} /> */}
     </div>
   );
 }
