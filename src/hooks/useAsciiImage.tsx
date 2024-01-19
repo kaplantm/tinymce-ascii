@@ -13,7 +13,7 @@ const scaleImage = (image: HTMLImageElement, maxDimension = 100) => {
   return { height: image.height * scale, width: image.width * scale };
 };
 
-export const useAsciiImage = (imageSrc: string, canvasRef: React.MutableRefObject<HTMLCanvasElement | null>) => {
+export const useAsciiImage = (imageSrc: string | null, canvasRef: React.MutableRefObject<HTMLCanvasElement | null>) => {
   const [imageData, setImageData] = useState<ImageData | null>(null);
 
   const updateImageData = useCallback(async () => {

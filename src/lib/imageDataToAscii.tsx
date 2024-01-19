@@ -1,20 +1,28 @@
 // Code reference: https://github.com/S4NCHOPANZ4/ASCII-converter/blob/main/src/components/ImageToAcsii.jsx
 
-const getAsciiCharacter = (brightness: number) => {
-  // const asciiChars = "■◉␥★☃◊";
-  // const asciiChars = ".,:!*#$@";
+const fontSize = 14;
+const letterSpacing = 0;
+const lineHeight = fontSize/2+1;
 
+const getAsciiCharacter = (brightness: number) => {
+  // const asciiChars = '@ $#wa*i=;,.    ';
+  const asciiChars = '■';
+  // const asciiChars = '@&%$#wa*i=-;,.    ';
+  // const asciiChars = "@&%QWNM0gB$#w}C{iF|(7J)vTLs?z/*cr!+<>;=^,_:'-.`    ";
+  // const asciiChars = "■◉★☃◊ ";
+  // const asciiChars = ".,:!*#$@";
 
   // const asciiChars = "◉★◊◊";
   // const asciiChars = "𓆉";
   // .,:!*#$@
   // Scale the brightness to the range of asciiChars array indexes
-  // const scaledBrightness = Math.floor((brightness / 255) * (asciiChars.length - 1));
+  const scaledBrightness = Math.floor((brightness / 255) * (asciiChars.length - 1));
 
   // Get the corresponding ASCII character
-  // const asciiChar = asciiChars.charAt(scaledBrightness);
+  const asciiChar = asciiChars.charAt(scaledBrightness);
 
-  return "■";
+  return asciiChar;
+  // return "■";
 };
 
 const createRowsStr = (arr: string[][], spacing: number) => {
@@ -54,6 +62,9 @@ export const imageDataToAscii = (imageData: ImageData | null): string => {
 
     // Store the ASCII character in the array
     asciiArray.push(`<span style="color: rgb(${red}, ${green}, ${blue});">${asciiChar}</span>`);
+
+    // asciiArray.push(`<span style="">${asciiChar}</span>`);
   }
-  return createRows(asciiArray, imageData.width);
+  const asciiContent = createRows(asciiArray, imageData.width);
+  return `<div style="font-family:Courier New,monospace,sans-serif; font-size:${fontSize}px; line-height: ${lineHeight}px; letter-spacing:-${letterSpacing}px; text-align:center; font-weight:800; white-space:nowrap">${asciiContent}</div>`;
 };
