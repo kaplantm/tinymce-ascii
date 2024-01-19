@@ -22,8 +22,9 @@ function App() {
   console.log({ ascii, file });
 
   useEffect(() => {
-    if (tinyEditorRef.current?.editor) {
+    if (tinyEditorRef.current?.editor && ascii) {
       tinyEditorRef.current.editor.insertContent(ascii);
+      setFile(null);
     }
   }, [ascii]);
 

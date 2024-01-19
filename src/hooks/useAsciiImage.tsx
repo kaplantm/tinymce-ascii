@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { imageDataToAscii } from "../lib/imageDataToAscii";
+import { AsciiOptions, imageDataToAscii } from "../lib/imageDataToAscii";
 
 const scaleImage = (image: HTMLImageElement, maxDimension = 100) => {
   const scale = maxDimension / Math.max(image.width, image.height);
@@ -13,11 +13,11 @@ const scaleImage = (image: HTMLImageElement, maxDimension = 100) => {
   return { height: image.height * scale, width: image.width * scale };
 };
 
-export const useAsciiImage = (imageSrc: string | null, canvasRef: React.MutableRefObject<HTMLCanvasElement | null>) => {
+export const useAsciiImage = (imageSrc: string | null, canvasRef: React.MutableRefObject<HTMLCanvasElement | null>, options?: AsciiOptions) => {
   const [imageData, setImageData] = useState<ImageData | null>(null);
 
   const updateImageData = useCallback(async () => {
-    if (!imageSrc) return null;
+    if (!imageSrc) return setImageData(null);
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
 
@@ -46,10 +46,10 @@ export const useAsciiImage = (imageSrc: string | null, canvasRef: React.MutableR
 
   return useMemo(
     () => ({
-      ascii: imageDataToAscii(imageData),
+      ascii: imageDataToAscii(imageData, options),
       height: imageData?.height,
       width: imageData?.width,
     }),
-    [imageData]
+    [imageData, options]
   );
 };
