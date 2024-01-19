@@ -3,7 +3,13 @@ import { imageDataToAscii } from "../lib/imageDataToAscii";
 
 const scaleImage = (image: HTMLImageElement, maxDimension = 100) => {
   const scale = maxDimension / Math.max(image.width, image.height);
-  console.log({scale, height: image.height * scale, width: image.width * scale, imageH: image.height, imageW: image.width })
+  console.log({
+    scale,
+    height: image.height * scale,
+    width: image.width * scale,
+    imageH: image.height,
+    imageW: image.width,
+  });
   return { height: image.height * scale, width: image.width * scale };
 };
 
@@ -11,6 +17,7 @@ export const useAsciiImage = (imageSrc: string, canvasRef: React.MutableRefObjec
   const [imageData, setImageData] = useState<ImageData | null>(null);
 
   const updateImageData = useCallback(async () => {
+    if (!imageSrc) return null;
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
 
