@@ -51,7 +51,7 @@ const createRows = (arr: string[], length: number) => {
   return imgStr;
 };
 
-export const imageDataToAscii = (imageData: ImageData | null, options?: Partial<AsciiOptions>): string => {
+export const imageDataToAscii = (imageData: ImageData | null | undefined, options?: Partial<AsciiOptions>): string => {
   const data = imageData?.data;
   if (!data) return "";
 

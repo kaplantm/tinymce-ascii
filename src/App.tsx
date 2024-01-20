@@ -1,11 +1,8 @@
-import { ChangeEventHandler, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEventHandler, useEffect, useCallback, useRef, useState } from "react";
 import "./App.css";
-// import testImage from "./assets/egg.jpg";
-
-// import testImage from "./assets/test_image_half_mb copy.jpeg";
 import TinyEditorView from "./components/TinyEditorView";
-import { useAsciiImage } from "./hooks/useAsciiImage";
 import { Editor } from "tinymce";
+import { srcToAscii } from "./lib/srcToAscii";
 
 // https://i.giphy.com/3o7btYoGy2JkgrLowE.gif
 // https://img.fruugo.com/product/9/90/726763909_max.jpg
@@ -14,30 +11,36 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const tinyEditorRef = useRef<any>(null);
-  const [file, setFile] = useState<File | null>();
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
 
-  const fileUrl = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
-  const { ascii } = useAsciiImage(fileUrl, canvasRef);
+  const getUpdatedAscii = useCallback(async () => {
+    const ascii = await srcToAscii(imageSrc, canvasRef);
 
-  console.log({ ascii, file });
+    console.log("***getUpdatedAscii", {imageSrc, ascii: ascii})
+    if (tinyEditorRef.current?.editor && ascii) {
+      // console.log("here", ascii)
+      tinyEditorRef.current.editor.insertContent(ascii);
+      // console.log("here2")
+      setImageSrc(null);
+    }
+  }, [imageSrc]);
 
   useEffect(() => {
-    if (tinyEditorRef.current?.editor && ascii) {
-      tinyEditorRef.current.editor.insertContent(ascii);
-      setFile(null);
-    }
-  }, [ascii]);
+    getUpdatedAscii();
+  }, [getUpdatedAscii]);
 
   const onFileChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const files = event?.target?.files || [];
-    setFile(files[0]);
+    const file = files[0];
+    setImageSrc(file ? URL.createObjectURL(file) : null);
   };
 
   const setupTinyEditor = (editor: Editor) => {
     console.log("here");
     editor.ui.registry.addButton("ascii", {
       text: "◕‿◕",
-      onAction: function (_) {
+      onAction: function (foo) {
+        console.log({foo});
         fileInputRef?.current?.click();
       },
     });
