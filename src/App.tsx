@@ -12,43 +12,37 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const tinyEditorRef = useRef<any>(null);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [ascii, setAscii] = useState<string | null>(null);
 
-  console.log("***renderloop", { imageSrc });
-  const getUpdatedAscii = useCallback(async () => {
-    console.log("*** getUpdatedAscii");
-    const ascii = await srcToAscii(imageSrc, canvasRef);
-
-    console.log("***getUpdatedAscii2", { imageSrc, ascii: ascii });
+  const updateTextContent = useCallback(async () => {
     if (tinyEditorRef.current?.editor && ascii) {
       tinyEditorRef.current.editor.insertContent(ascii);
-      setImageSrc(null);
+      setAscii(null);
     }
-  }, [imageSrc]);
+  }, [ascii]);
 
   useEffect(() => {
-    console.log("*** useeffect");
-    getUpdatedAscii();
-  }, [getUpdatedAscii, imageSrc]);
+    updateTextContent();
+  }, [updateTextContent]);
 
-  const onFileChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+  const onFileChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
     const files = event?.target?.files || [];
     const file = files[0];
-    setImageSrc(file ? URL.createObjectURL(file) : null);
+    const src = file ? URL.createObjectURL(file) : null;
+    const newAscii = await srcToAscii(src, canvasRef);
+    setAscii(newAscii);
   };
 
   const setupTinyEditor = (editor: Editor) => {
-    console.log("here");
     editor.ui.registry.addButton("ascii", {
       text: "◕‿◕",
       onAction: async (_) => {
         const selectionObj = tinyEditorRef.current.editor.selection;
         const selectedText = selectionObj.getContent();
-        console.log("***selectedText", selectedText);
         if (selectedText) {
           const src = await textToSrc(selectedText);
-          console.log("***src", src);
-          setImageSrc(src);
+          const newAscii = await srcToAscii(src, canvasRef, { scale: 1, maxDimension: null, fontSize: 10 });
+          setAscii(newAscii);
         } else {
           fileInputRef?.current?.click();
         }

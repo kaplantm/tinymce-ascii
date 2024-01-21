@@ -1,20 +1,27 @@
+import { AsciiOptions } from "./imageDataToAscii";
 
-const scaleImage = (image: HTMLImageElement, maxDimension = 300) => {
-  // const scale = maxDimension / Math.max(image.width, image.height);
-  // console.log({
-  //   scale,
-  //   height: image.height * scale,
-  //   width: image.width * scale,
-  //   imageH: image.height,
-  //   imageW: image.width,
-  // });
-  const scale = 1;
+const scaleImage = (image: HTMLImageElement, options: AsciiOptions) => {
+  if (!options.scale && !options.maxDimension) return { height: image.height, width: image.width };
+
+  const maxDimensionScale = options.maxDimension
+    ? options.maxDimension / Math.max(image.width, image.height)
+    : options.scale;
+  const scale = Math.min(maxDimensionScale, options.scale);
+  console.log({
+    scale,
+    maxDimensionScale,
+    option: options.scale,
+    width: image.width,
+    height: image.height,
+    maxD: options.maxDimension,
+  });
   return { height: image.height * scale, width: image.width * scale };
 };
 
 export const srcToImageData = async (
   imageSrc: string | null,
-  canvasRef: React.MutableRefObject<HTMLCanvasElement | null>
+  canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
+  options: AsciiOptions
 ) => {
   if (!imageSrc) return null;
   const canvas = canvasRef.current;
@@ -26,20 +33,20 @@ export const srcToImageData = async (
 
   await new Promise((resolve, reject) => {
     img.onload = resolve;
-    img.onerror = reject
+    img.onerror = reject;
   });
 
   canvas.style.width = `${img.width}`;
   canvas.style.height = `${img.height}`;
 
-  const scaledDimensions = scaleImage(img);
+  const scaledDimensions = scaleImage(img, options);
   // Set the new size of the canvas
-  canvas.width = img.width;
-  canvas.height = img.height;
+  canvas.width = scaledDimensions.width;
+  canvas.height = scaledDimensions.height;
 
   // Draw the original image onto the canvas
-  ctx.drawImage(img, 0, 0, img.width, img.height);
+  ctx.drawImage(img, 0, 0, scaledDimensions.width, scaledDimensions.height);
 
   // Get the pixel data from the canvas context
-  return ctx.getImageData(0, 0, img.width, img.height);
+  return ctx.getImageData(0, 0, scaledDimensions.width, scaledDimensions.height);
 };

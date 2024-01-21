@@ -1,7 +1,8 @@
 // Code reference: https://github.com/S4NCHOPANZ4/ASCII-converter/blob/main/src/components/ImageToAcsii.jsx
 
 export type AsciiOptions = {
-  detail: number;
+  scale: number;
+  maxDimension: number | null;
   fontSize: number;
   characterset: string;
   brightness: number;
@@ -15,9 +16,10 @@ export const charactersets = {
   square: "■",
 };
 
-const defaultOptions: AsciiOptions = {
-  detail: 100,
-  fontSize: 14,
+export const defaultAsciiOptions: AsciiOptions = {
+  scale: 1,
+  maxDimension: 100,
+  fontSize: 10,
   characterset: charactersets.original,
   brightness: -1,
   spacing: { letter: 0, line: 3 },
@@ -51,11 +53,10 @@ const createRows = (arr: string[], length: number) => {
   return imgStr;
 };
 
-export const imageDataToAscii = (imageData: ImageData | null | undefined, options?: Partial<AsciiOptions>): string => {
+export const imageDataToAscii = (imageData: ImageData | null | undefined, options: AsciiOptions): string => {
   const data = imageData?.data;
   if (!data) return "";
 
-  const fullOptions = {...defaultOptions, options};
   // Create an array to store the ASCII characters
   const asciiArray = [];
   // Iterate over the pixel data and convert it to ASCII characters
@@ -69,7 +70,7 @@ export const imageDataToAscii = (imageData: ImageData | null | undefined, option
     const brightness = red + green + blue; // dividing by 4 here sinces theres a lot of extra whitespace in ascii
 
     // Convert the average brightness to an ASCII character
-    const asciiChar = getAsciiCharacter(brightness / 3 - fullOptions.brightness, fullOptions.characterset);
+    const asciiChar = getAsciiCharacter(brightness / 3 - options.brightness, options.characterset);
 
     // Store the ASCII character in the array
     asciiArray.push(`<span style="color: rgb(${red}, ${green}, ${blue});">${asciiChar}</span>`); // color
@@ -77,7 +78,7 @@ export const imageDataToAscii = (imageData: ImageData | null | undefined, option
     // asciiArray.push(`<span style="">${asciiChar}</span>`); // greyscale 
   }
 
-  const lineHeight = fullOptions.fontSize / 2 + fullOptions.spacing.line;
+  const lineHeight = options.fontSize / 2 + options.spacing.line;
   const asciiContent = createRows(asciiArray, imageData.width);
-  return `<div style="font-family:Terminal,monospace,sans-serif; font-size:${fullOptions.fontSize}px; line-height: ${lineHeight}px; letter-spacing:-${fullOptions.spacing.letter}px;  white-space:nowrap">${asciiContent}</div>`;
+  return `<div style="font-family:Terminal,monospace,sans-serif; font-size:${options.fontSize}px; line-height: ${lineHeight}px; letter-spacing:-${options.spacing.letter}px;  white-space:nowrap">${asciiContent}</div>`;
 };

@@ -1,13 +1,13 @@
-import { AsciiOptions, imageDataToAscii } from "./imageDataToAscii";
+import { AsciiOptions, defaultAsciiOptions, imageDataToAscii } from "./imageDataToAscii";
 import { srcToImageData } from "./srcToImageData";
 
 export const srcToAscii = async (
   imageSrc: string | null,
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
-  options?: AsciiOptions
+  options?: Partial<AsciiOptions>
 ) => {
-  console.log("***srcToAscii1")
-  const imageData = await srcToImageData(imageSrc, canvasRef);
-  console.log("***srcToAscii2")
-  return imageDataToAscii(imageData, options);
+
+  const fullOptions = {...defaultAsciiOptions, ...options};
+  const imageData = await srcToImageData(imageSrc, canvasRef, fullOptions);
+  return imageDataToAscii(imageData, fullOptions);
 };

@@ -55,7 +55,7 @@ const getSvgWithForeignObject = (html: string, height: number, width: number) =>
       font: 15px Arial, sans-serif;
     }
   </style>
-    <rect width="100%" height="100%" fill="green"/>
+    <rect width="100%" height="100%" fill="white"/>
     <foreignObject width="100%" height="100%" classname="svg-text-container">
     ${html}
     </foreignObject>
