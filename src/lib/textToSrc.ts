@@ -77,7 +77,6 @@ export const textToSrc = async (text: string | null) => {
   svgContainer.innerHTML = getSvgWithForeignObject(textAsHtml.innerHTML, textAsDivBounds.height, textAsDivBounds.width);
 
   const svgElement = document.getElementById(textAsSvgId);
-  console.log("***svgsvgElement", { svgElement, svgContainer });
   if (!svgElement) return null;
   const elementAsString = new XMLSerializer().serializeToString(svgElement);
   const base64 = window.btoa(unescape(encodeURIComponent(elementAsString)));

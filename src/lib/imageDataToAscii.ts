@@ -18,7 +18,7 @@ export const charactersets = {
 
 export const defaultAsciiOptions: AsciiOptions = {
   scale: 1,
-  maxDimension: 100,
+  maxDimension: 80,
   fontSize: 10,
   characterset: charactersets.original,
   brightness: -1,
@@ -80,5 +80,5 @@ export const imageDataToAscii = (imageData: ImageData | null | undefined, option
 
   const lineHeight = options.fontSize / 2 + options.spacing.line;
   const asciiContent = createRows(asciiArray, imageData.width);
-  return `<div style="font-family:Terminal,monospace,sans-serif; font-size:${options.fontSize}px; line-height: ${lineHeight}px; letter-spacing:-${options.spacing.letter}px;  white-space:nowrap">${asciiContent}</div>`;
+  return `<div style="font-family:Terminal,monospace,sans-serif; font-size:${options.fontSize}px; line-height: ${lineHeight}px; letter-spacing:-${options.spacing.letter}px;  white-space:nowrap">${asciiContent}</div><span style="color:default">&nbsp;</span>`;
 };

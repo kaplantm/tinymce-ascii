@@ -9,8 +9,8 @@ const TinyEditorView = forwardRef(
           ref={ref}
           apiKey={import.meta.env.VITE_TINY_MCE_API_KEY}
           init={{
-            height: window.innerHeight * 0.8,
-            width: window.innerWidth * 0.8,
+            height: window.innerHeight * 0.9,
+            width: window.innerWidth * 0.9,
             menubar: false,
             statusbar: false,
             ...init,
