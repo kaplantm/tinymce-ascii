@@ -53,7 +53,8 @@ const createRows = (arr: string[], length: number) => {
   return imgStr;
 };
 
-export const imageDataToAscii = (imageData: ImageData | null | undefined, options: AsciiOptions): string => {
+export const imageDataToAscii = (imageData: ImageData | null | undefined, options?: Partial<AsciiOptions>): string => {
+  const fullOptions = { ...defaultAsciiOptions, ...options };
   const data = imageData?.data;
   if (!data) return "";
 
@@ -70,15 +71,15 @@ export const imageDataToAscii = (imageData: ImageData | null | undefined, option
     const brightness = red + green + blue; // dividing by 4 here sinces theres a lot of extra whitespace in ascii
 
     // Convert the average brightness to an ASCII character
-    const asciiChar = getAsciiCharacter(brightness / 3 - options.brightness, options.characterset);
+    const asciiChar = getAsciiCharacter(brightness / 3 - fullOptions.brightness, fullOptions.characterset);
 
     // Store the ASCII character in the array
     asciiArray.push(`<span style="color: rgb(${red}, ${green}, ${blue});">${asciiChar}</span>`); // color
 
-    // asciiArray.push(`<span style="">${asciiChar}</span>`); // greyscale 
+    // asciiArray.push(`<span style="">${asciiChar}</span>`); // greyscale
   }
 
-  const lineHeight = options.fontSize / 2 + options.spacing.line;
+  const lineHeight = fullOptions.fontSize / 2 + fullOptions.spacing.line;
   const asciiContent = createRows(asciiArray, imageData.width);
-  return `<div style="font-family:Terminal,monospace,sans-serif; font-size:${options.fontSize}px; line-height: ${lineHeight}px; letter-spacing:-${options.spacing.letter}px;  white-space:nowrap">${asciiContent}</div><span style="color:default">&nbsp;</span>`;
+  return `<div style="font-family:Terminal,monospace,sans-serif; font-size:${fullOptions.fontSize}px; line-height: ${lineHeight}px; letter-spacing:-${fullOptions.spacing.letter}px;  white-space:nowrap">${asciiContent}</div><span style="color:default">&nbsp;</span>`;
 };

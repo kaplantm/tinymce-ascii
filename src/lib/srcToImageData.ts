@@ -1,4 +1,4 @@
-import { AsciiOptions } from "./imageDataToAscii";
+import { AsciiOptions, defaultAsciiOptions } from "./imageDataToAscii";
 
 const scaleImage = (image: HTMLImageElement, options: AsciiOptions) => {
   if (!options.scale && !options.maxDimension) return { height: image.height, width: image.width };
@@ -16,6 +16,20 @@ const scaleImage = (image: HTMLImageElement, options: AsciiOptions) => {
     maxD: options.maxDimension,
   });
   return { height: image.height * scale, width: image.width * scale };
+};
+
+export const getScaledImageData = (img, canvas, ctx, options = {}) => {
+  const fullOptions = { ...defaultAsciiOptions, ...options };
+  const scaledDimensions = scaleImage(img, fullOptions);
+  // Set the new size of the canvas
+  canvas.width = scaledDimensions.width;
+  canvas.height = scaledDimensions.height;
+
+  // Draw the original image onto the canvas
+  ctx.drawImage(img, 0, 0, scaledDimensions.width, scaledDimensions.height);
+
+  // Get the pixel data from the canvas context
+  return ctx.getImageData(0, 0, scaledDimensions.width, scaledDimensions.height);
 };
 
 export const srcToImageData = async (
@@ -36,17 +50,5 @@ export const srcToImageData = async (
     img.onerror = reject;
   });
 
-  canvas.style.width = `${img.width}`;
-  canvas.style.height = `${img.height}`;
-
-  const scaledDimensions = scaleImage(img, options);
-  // Set the new size of the canvas
-  canvas.width = scaledDimensions.width;
-  canvas.height = scaledDimensions.height;
-
-  // Draw the original image onto the canvas
-  ctx.drawImage(img, 0, 0, scaledDimensions.width, scaledDimensions.height);
-
-  // Get the pixel data from the canvas context
-  return ctx.getImageData(0, 0, scaledDimensions.width, scaledDimensions.height);
+  return getScaledImageData(img, canvas, ctx, options);
 };
