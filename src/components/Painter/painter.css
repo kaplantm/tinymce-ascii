@@ -1,0 +1,28 @@
+.draw-area {
+  position: relative;
+  padding: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.Menu label {
+  color: black;
+}
+
+.Menu {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2em;
+}
+
+.Menu div {
+  display: flex;
+  justify-content: space-between;
+  gap: 2em;
+}
+
+.Menu input {
+  width: 150px;
+}

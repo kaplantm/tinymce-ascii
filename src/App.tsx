@@ -4,9 +4,10 @@ import TinyEditorView from "./components/TinyEditorView";
 import { Editor } from "tinymce";
 import { srcToAscii } from "./lib/srcToAscii";
 import { textToSrc } from "./lib/textToSrc";
-import Painter from "./components/Painter";
-import { defaultAsciiOptions, imageDataToAscii } from "./lib/imageDataToAscii";
+import Painter from "./components/Painter/Painter";
+import {  imageDataToAscii } from "./lib/imageDataToAscii";
 import { getScaledImageData } from "./lib/srcToImageData";
+import Modal from "./components/Modal/Modal";
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -14,6 +15,7 @@ function App() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const tinyEditorRef = useRef<any>(null);
   const [ascii, setAscii] = useState<string | null>(null);
+  const [paintMode, setPaintMode] = useState(false);
 
   const updateTextContent = useCallback(async () => {
     if (tinyEditorRef.current?.editor && ascii) {
@@ -26,16 +28,17 @@ function App() {
     updateTextContent();
   }, [updateTextContent]);
 
-  const onFinishDrawing = useCallback(async () => {
-    console.log("***onFinishDrawing")
+  const onModalClose = useCallback(async () => {
+    setPaintMode(false);
+    console.log("***onFinishDrawing");
     const ctx = canvasRef.current.getContext("2d");
-    console.log("***onFinishDrawing1", ctx)
+    console.log("***onFinishDrawing1", ctx);
     const imageData = getScaledImageData(painterRef.current, canvasRef.current, ctx);
 
-    console.log("***onFinishDrawing2", imageData)
+    console.log("***onFinishDrawing2", imageData);
     const newAscii = imageDataToAscii(imageData);
 
-    console.log("***onFinishDrawin3g", newAscii)
+    console.log("***onFinishDrawin3g", newAscii);
     setAscii(newAscii);
   }, []);
 
@@ -53,10 +56,15 @@ function App() {
       onAction: async (_) => {
         const selectionObj = tinyEditorRef.current.editor.selection;
         const selectedText = selectionObj.getContent();
+        console.log({ selectedText, contains: selectedText.includes("🖌️") });
         if (selectedText) {
-          const src = await textToSrc(selectedText);
-          const newAscii = await srcToAscii(src, canvasRef, { scale: 1, maxDimension: null, fontSize: 10 });
-          setAscii(newAscii);
+          if (selectedText.includes("🖌️")) {
+            setPaintMode(true);
+          } else {
+            const src = await textToSrc(selectedText);
+            const newAscii = await srcToAscii(src, canvasRef, { scale: 1, maxDimension: null, fontSize: 10 });
+            setAscii(newAscii);
+          }
         } else {
           fileInputRef?.current?.click();
         }
@@ -67,10 +75,12 @@ function App() {
   return (
     <div>
       <input type="file" onChange={onFileChange} ref={fileInputRef} style={{ display: "none" }} />
-      {/* <canvas ref={canvasRef} style={{ display: "none" }} /> */}
-      <canvas ref={canvasRef} />
+      <canvas ref={canvasRef} style={{ display: "none" }} />
+      {/* <canvas ref={canvasRef} /> */}
       <TinyEditorView init={{ setup: setupTinyEditor, toolbar: "ascii" }} ref={tinyEditorRef} />
-      <Painter ref={painterRef} onFinishDrawing={onFinishDrawing} />
+      <Modal handleClose={onModalClose} show={paintMode}>
+        <Painter ref={painterRef} />
+      </Modal>
     </div>
   );
 }

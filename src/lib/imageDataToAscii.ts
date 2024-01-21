@@ -22,7 +22,7 @@ export const defaultAsciiOptions: AsciiOptions = {
   fontSize: 10,
   characterset: charactersets.original,
   brightness: -1,
-  spacing: { letter: 0, line: 3 },
+  spacing: { letter: 0, line: 0 },
 };
 
 // const asciiChars = "@&%QWNM0gB$#w}C{iF|(7J)vTLs?z/*cr!+<>;=^,_:'-.`    ";
