@@ -18,7 +18,7 @@ export const charactersets = {
 
 export const defaultAsciiOptions: AsciiOptions = {
   scale: 1,
-  maxDimension: 80,
+  maxDimension: 100,
   fontSize: 10,
   characterset: charactersets.original,
   brightness: -1,
