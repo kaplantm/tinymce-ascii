@@ -11,11 +11,27 @@ const getOrCreateElement = (id: string, type = "div") => {
   return el;
 };
 
+const getHiddenContainer = () => {
+  const hiddenContainer = getOrCreateElement("hidden-svg-generator");
+  hiddenContainer.style.visibility = "hidden";
+  return hiddenContainer;
+};
+
+const getOrCreateElementInHiddenContainer = (id: string, type = "div") => {
+  const hiddenContainer = getHiddenContainer();
+  let el = document.getElementById(id);
+  if (el) return el;
+  el = document.createElement(type);
+  el.id = id;
+  hiddenContainer.appendChild(el);
+  return el;
+};
+
 const getTextHtml = (text: string) =>
-  `<div xmlns="http://www.w3.org/1999/xhtml" style="background:white;color:black;"><pre>${text}</pre></div>`;
+  `<div xmlns="http://www.w3.org/1999/xhtml" style="background:white;color:black;">${text}</div>`;
 
 const renderTextAsHtml = (text: string) => {
-  const contentEl = getOrCreateElement(textAsHtmlContainerId);
+  const contentEl = getOrCreateElementInHiddenContainer(textAsHtmlContainerId);
   contentEl.ariaHidden = "true";
   contentEl.innerHTML = getTextHtml(text);
   return contentEl;
@@ -32,12 +48,9 @@ const getSvgWithForeignObject = (html: string, height: number, width: number) =>
     id=${textAsSvgId}
   >
   <style>
-    pre {
-      margin: 0;
-      line-height: .6;
-    }
     p {
       margin: 0;
+      line-height: 1;
     }
   </style>
     <rect width="100%" height="100%" fill="green"/>
@@ -56,21 +69,10 @@ export const textToSrc = async (text: string | null) => {
   if (!text) return null;
   const textAsHtml = renderTextAsHtml(text);
   const textAsDivBounds = textAsHtml.getBoundingClientRect();
-  console.log({ textAsDivBounds, html: textAsHtml.innerHTML });
-  console.log("bounds", {
-    width: textAsDivBounds.width,
-    height: textAsDivBounds.height,
-    widthr: Math.ceil(textAsDivBounds.width),
-    heightr: Math.ceil(textAsDivBounds.height),
-  });
 
-  const svgContainer = getOrCreateElement(textAsSvgContainerId, "div"); // TODO: do i need to append?
+  const svgContainer = getOrCreateElementInHiddenContainer(textAsSvgContainerId, "div"); // TODO: do i need to append?
   svgContainer.style.display = "flex";
-  svgContainer.innerHTML = getSvgWithForeignObject(
-    textAsHtml.innerHTML,
-    textAsDivBounds.height,
-    textAsDivBounds.width
-  );
+  svgContainer.innerHTML = getSvgWithForeignObject(textAsHtml.innerHTML, textAsDivBounds.height, textAsDivBounds.width);
 
   const svgElement = document.getElementById(textAsSvgId);
   console.log("***svgsvgElement", { svgElement, svgContainer });

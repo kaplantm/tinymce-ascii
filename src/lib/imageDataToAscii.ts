@@ -72,9 +72,9 @@ export const imageDataToAscii = (imageData: ImageData | null | undefined, option
     const asciiChar = getAsciiCharacter(brightness / 3 - fullOptions.brightness, fullOptions.characterset);
 
     // Store the ASCII character in the array
-    // asciiArray.push(`<span style="color: rgb(${red}, ${green}, ${blue});">${asciiChar}</span>`);
+    asciiArray.push(`<span style="color: rgb(${red}, ${green}, ${blue});">${asciiChar}</span>`); // color
 
-    asciiArray.push(`<span style="">${asciiChar}</span>`);
+    // asciiArray.push(`<span style="">${asciiChar}</span>`); // greyscale 
   }
 
   const lineHeight = fullOptions.fontSize / 2 + fullOptions.spacing.line;

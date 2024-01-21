@@ -28,13 +28,10 @@
   border: 3px solid blue;
 } */
 
-/* the pre style must be the same as the styles in textToSrc's styles inside the svg */
-#text-as-html-container pre, svg pre, #text-as-html-container pre  {
-  margin: 0;
-  line-height: .6;
-}
+
 #text-as-html-container p, svg p, #text-as-html-container p {
-  margin:0
+  margin:0;
+  line-height: 1;
 }
 
 canvas {
