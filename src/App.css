@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -5,13 +9,35 @@
   text-align: center;
 }
 
-#text-as-html-container {
-  border: 3px solid green
-}
+/* #text-as-html-container {
+  border: 3px solid green;
+} */
 #text-as-html-container p {
-  margin: 0
+  margin: 0;
 }
 
 #text-as-html-container pre {
-  margin: 0
+  margin: 0;
+}
+
+/* #text-to-svg-container {
+  border: 3px solid brown;
+}
+
+#text-to-svg {
+  border: 3px solid blue;
+} */
+
+/* the pre style must be the same as the styles in textToSrc's styles inside the svg */
+#text-as-html-container pre, svg pre, #text-as-html-container pre  {
+  margin: 0;
+  line-height: .6;
+}
+#text-as-html-container p, svg p, #text-as-html-container p {
+  margin:0
+}
+
+canvas {
+  border: 2px solid purple;
+  display: block;
 }

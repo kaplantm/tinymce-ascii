@@ -2,51 +2,50 @@ const textAsSvgId = "text-to-svg";
 const textAsSvgContainerId = "text-to-svg-container";
 const textAsHtmlContainerId = "text-as-html-container";
 
-const getOrCreateElement = (id: string, append = true, type = "div") => {
+const getOrCreateElement = (id: string, type = "div") => {
   let el = document.getElementById(id);
   if (el) return el;
   el = document.createElement(type);
   el.id = id;
-  if (append) document.body.appendChild(el);
+  document.body.appendChild(el);
   return el;
 };
 
 const getTextHtml = (text: string) =>
-  `<div xmlns="http://www.w3.org/1999/xhtml" style="background:white;color:black"><pre>${text}</pre></div>`;
+  `<div xmlns="http://www.w3.org/1999/xhtml" style="background:white;color:black;"><pre>${text}</pre></div>`;
 
 const renderTextAsHtml = (text: string) => {
-  const contentEl = getOrCreateElement(textAsHtmlContainerId, true);
+  const contentEl = getOrCreateElement(textAsHtmlContainerId);
   contentEl.ariaHidden = "true";
   contentEl.innerHTML = getTextHtml(text);
   return contentEl;
 };
 
-const getSvgWithForeignObject = (html: string) => `
+const getSvgWithForeignObject = (html: string, height: number, width: number) => `
   <svg
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
-    width="126px"
-    height="126px"
+    width=${width}
+    height=${height}
     xml:space="preserve"
     id=${textAsSvgId}
   >
-    <foreignObject width="200" height="200" classname="svg-text-container">
+  <style>
+    pre {
+      margin: 0;
+      line-height: .6;
+    }
+    p {
+      margin: 0;
+    }
+  </style>
+    <rect width="100%" height="100%" fill="green"/>
+    <foreignObject width="100%" height="100%" classname="svg-text-container">
     ${html}
     </foreignObject>
   </svg>
 `;
-
-// const renderHTMLAsSvg = (text:string) => {
-//     let element = document.getElementById(textAsSvgId);
-//     if (element) return element;
-//     element = document.createElement("svg");
-//     element.id = textAsSvgId;
-//     element.ariaHidden = "true";
-//     element.innerHTML = `<pre>${text}</pre>`;
-//     document.appendChild(element);
-//     return element;
-//   };
 
 // Render a div with the text (display: none) that scales to fit the content
 // get dimensions of the div
@@ -58,9 +57,20 @@ export const textToSrc = async (text: string | null) => {
   const textAsHtml = renderTextAsHtml(text);
   const textAsDivBounds = textAsHtml.getBoundingClientRect();
   console.log({ textAsDivBounds, html: textAsHtml.innerHTML });
+  console.log("bounds", {
+    width: textAsDivBounds.width,
+    height: textAsDivBounds.height,
+    widthr: Math.ceil(textAsDivBounds.width),
+    heightr: Math.ceil(textAsDivBounds.height),
+  });
 
-  const svgContainer = getOrCreateElement(textAsSvgContainerId, true, "svg"); // TODO: do i need to append?
-  svgContainer.innerHTML = getSvgWithForeignObject(textAsHtml.innerHTML);
+  const svgContainer = getOrCreateElement(textAsSvgContainerId, "div"); // TODO: do i need to append?
+  svgContainer.style.display = "flex";
+  svgContainer.innerHTML = getSvgWithForeignObject(
+    textAsHtml.innerHTML,
+    textAsDivBounds.height,
+    textAsDivBounds.width
+  );
 
   const svgElement = document.getElementById(textAsSvgId);
   console.log("***svgsvgElement", { svgElement, svgContainer });

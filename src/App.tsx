@@ -59,9 +59,8 @@ function App() {
   return (
     <div>
       <input type="file" onChange={onFileChange} ref={fileInputRef} style={{ display: "none" }} />
-      {/* {file && <img id="myImg" src={URL.createObjectURL(file)}></img>} */}
       {/* <canvas ref={canvasRef} style={{ display: "none" }} /> */}
-      <canvas ref={canvasRef} style={{ border: "1px solid red" }} />
+      <canvas ref={canvasRef} />
       <TinyEditorView init={{ setup: setupTinyEditor, toolbar: "ascii" }} ref={tinyEditorRef} />
     </div>
   );
