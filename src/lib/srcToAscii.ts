@@ -6,6 +6,8 @@ export const srcToAscii = async (
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
   options?: AsciiOptions
 ) => {
+  console.log("***srcToAscii1")
   const imageData = await srcToImageData(imageSrc, canvasRef);
+  console.log("***srcToAscii2")
   return imageDataToAscii(imageData, options);
 };

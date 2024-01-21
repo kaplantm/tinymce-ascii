@@ -1,28 +1,41 @@
-import { AsciiOptions, imageDataToAscii } from "./imageDataToAscii";
-import { srcToImageData } from "./srcToImageData";
-
 const textAsSvgId = "text-to-svg";
-// const textAsHtmlContainerId = "text-as-html-container";
-const textAsHtmlContentId = "text-as-html-content";
+const textAsSvgContainerId = "text-to-svg-container";
+const textAsHtmlContainerId = "text-as-html-container";
 
-const getOrCreateElement = (id: string, append = false, type = "div") => {
+const getOrCreateElement = (id: string, append = true, type = "div") => {
   let el = document.getElementById(id);
   if (el) return el;
   el = document.createElement(type);
-  if (append) document.appendChild(el);
+  el.id = id;
+  if (append) document.body.appendChild(el);
   return el;
 };
 
+const getTextHtml = (text: string) =>
+  `<div xmlns="http://www.w3.org/1999/xhtml" style="background:white;color:black"><pre>${text}</pre></div>`;
+
 const renderTextAsHtml = (text: string) => {
-  //   const containerEl = getOrCreateElement(textAsHtmlContainerId); // TODO: now do i need to append it?
-  const contentEl = getOrCreateElement(textAsHtmlContentId);
+  const contentEl = getOrCreateElement(textAsHtmlContainerId, true);
   contentEl.ariaHidden = "true";
-  contentEl.innerHTML = `<pre>${text}</pre>`;
+  contentEl.innerHTML = getTextHtml(text);
   return contentEl;
-  //   containerEl.appendChild(contentEl)
-  //   element.style.display = "none" // TODO: now visible but offscreen? or maube visibility hidden? not sure
-  //   document.appendChild(element); // TODO: now do i need to append it?
 };
+
+const getSvgWithForeignObject = (html: string) => `
+  <svg
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="126px"
+    height="126px"
+    xml:space="preserve"
+    id=${textAsSvgId}
+  >
+    <foreignObject width="200" height="200" classname="svg-text-container">
+    ${html}
+    </foreignObject>
+  </svg>
+`;
 
 // const renderHTMLAsSvg = (text:string) => {
 //     let element = document.getElementById(textAsSvgId);
@@ -46,20 +59,12 @@ export const textToSrc = async (text: string | null) => {
   const textAsDivBounds = textAsHtml.getBoundingClientRect();
   console.log({ textAsDivBounds, html: textAsHtml.innerHTML });
 
-  const svgElement = getOrCreateElement(textAsSvgId, false, "svg"); // TODO: do i need to append?
-  const width = `${textAsDivBounds.width}px`;
-  const height = `${textAsDivBounds.height}px`;
-  svgElement.style.width = width;
-  svgElement.style.height = height;
+  const svgContainer = getOrCreateElement(textAsSvgContainerId, true, "svg"); // TODO: do i need to append?
+  svgContainer.innerHTML = getSvgWithForeignObject(textAsHtml.innerHTML);
 
-  svgElement.innerHTML = `
-<foreignObject width=${width} height=${height}>
-    <div xmlns="http://www.w3.org/1999/xhtml">
-        ${textAsHtml.innerHTML}
-    </div>
-</foreignObject>
-`;
-
+  const svgElement = document.getElementById(textAsSvgId);
+  console.log("***svgsvgElement", { svgElement, svgContainer });
+  if (!svgElement) return null;
   const elementAsString = new XMLSerializer().serializeToString(svgElement);
   const base64 = window.btoa(unescape(encodeURIComponent(elementAsString)));
   const src = `data:image/svg+xml;base64,${base64}`;

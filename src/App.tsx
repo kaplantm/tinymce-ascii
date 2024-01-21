@@ -3,6 +3,7 @@ import "./App.css";
 import TinyEditorView from "./components/TinyEditorView";
 import { Editor } from "tinymce";
 import { srcToAscii } from "./lib/srcToAscii";
+import { textToSrc } from "./lib/textToSrc";
 
 // https://i.giphy.com/3o7btYoGy2JkgrLowE.gif
 // https://img.fruugo.com/product/9/90/726763909_max.jpg
@@ -13,21 +14,22 @@ function App() {
   const tinyEditorRef = useRef<any>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
 
+  console.log("***renderloop", { imageSrc });
   const getUpdatedAscii = useCallback(async () => {
+    console.log("*** getUpdatedAscii");
     const ascii = await srcToAscii(imageSrc, canvasRef);
 
-    console.log("***getUpdatedAscii", {imageSrc, ascii: ascii})
+    console.log("***getUpdatedAscii2", { imageSrc, ascii: ascii });
     if (tinyEditorRef.current?.editor && ascii) {
-      // console.log("here", ascii)
       tinyEditorRef.current.editor.insertContent(ascii);
-      // console.log("here2")
       setImageSrc(null);
     }
   }, [imageSrc]);
 
   useEffect(() => {
+    console.log("*** useeffect");
     getUpdatedAscii();
-  }, [getUpdatedAscii]);
+  }, [getUpdatedAscii, imageSrc]);
 
   const onFileChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const files = event?.target?.files || [];
@@ -39,9 +41,17 @@ function App() {
     console.log("here");
     editor.ui.registry.addButton("ascii", {
       text: "◕‿◕",
-      onAction: function (foo) {
-        console.log({foo});
-        fileInputRef?.current?.click();
+      onAction: async (_) => {
+        const selectionObj = tinyEditorRef.current.editor.selection;
+        const selectedText = selectionObj.getContent();
+        console.log("***selectedText", selectedText);
+        if (selectedText) {
+          const src = await textToSrc(selectedText);
+          console.log("***src", src);
+          setImageSrc(src);
+        } else {
+          fileInputRef?.current?.click();
+        }
       },
     });
   };
@@ -49,14 +59,10 @@ function App() {
   return (
     <div>
       <input type="file" onChange={onFileChange} ref={fileInputRef} style={{ display: "none" }} />
-      {/* <br /> */}
       {/* {file && <img id="myImg" src={URL.createObjectURL(file)}></img>} */}
-      <canvas ref={canvasRef} style={{ display: "none" }} />
-      {/* <TinyEditorView onEditorChange={onEditorChange} value={tinyEditorContent} /> */}
-
+      {/* <canvas ref={canvasRef} style={{ display: "none" }} /> */}
+      <canvas ref={canvasRef} style={{ border: "1px solid red" }} />
       <TinyEditorView init={{ setup: setupTinyEditor, toolbar: "ascii" }} ref={tinyEditorRef} />
-
-      {/* <TinyEditorView copy={"hi"} onEditorChange={onEditorChange} value={tinyEditorContent} /> */}
     </div>
   );
 }
