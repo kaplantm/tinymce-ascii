@@ -28,10 +28,12 @@
   border: 3px solid blue;
 } */
 
-
-#text-as-html-container p, svg p, #text-as-html-container p {
-  margin:0;
+#text-as-html-container p,
+svg p,
+#text-as-html-container p {
+  margin: 0;
   line-height: 1;
+  font: 15px Arial, sans-serif;
 }
 
 canvas {

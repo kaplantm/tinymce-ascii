@@ -14,6 +14,8 @@ const getOrCreateElement = (id: string, type = "div") => {
 const getHiddenContainer = () => {
   const hiddenContainer = getOrCreateElement("hidden-svg-generator");
   hiddenContainer.style.visibility = "hidden";
+  hiddenContainer.style.position = "absolute";
+  hiddenContainer.ariaHidden = "true";
   return hiddenContainer;
 };
 
@@ -32,7 +34,6 @@ const getTextHtml = (text: string) =>
 
 const renderTextAsHtml = (text: string) => {
   const contentEl = getOrCreateElementInHiddenContainer(textAsHtmlContainerId);
-  contentEl.ariaHidden = "true";
   contentEl.innerHTML = getTextHtml(text);
   return contentEl;
 };
@@ -51,6 +52,7 @@ const getSvgWithForeignObject = (html: string, height: number, width: number) =>
     p {
       margin: 0;
       line-height: 1;
+      font: 15px Arial, sans-serif;
     }
   </style>
     <rect width="100%" height="100%" fill="green"/>
